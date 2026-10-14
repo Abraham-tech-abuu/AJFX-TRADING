@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradePro | realistic trading UI</title>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Inter for clean typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b0e14;
+      color: #e8edf5;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* main dashboard container */
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      background: #0f131c;
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #1e2532;
+    }
+
+    /* ===== AUTH SCREEN (overlay) ===== */
+    .auth-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 11, 18, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.3s ease, visibility 0.3s;
+      padding: 1.5rem;
+    }
+
+    .auth-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .auth-card {
+      background: #141b26;
+      border-radius: 2rem;
+      width: 100%;
+      max-width: 480px;
+      padding: 2.5rem 2rem;
+      border: 1px solid #29313f;
+      box-shadow: 0 30px 40px -20px #000000;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-header .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-header .logo i {
+      color: #3b82f6;
+      font-size: 2rem;
+    }
+
+    .auth-header p {
+      color: #8b98aa;
+      font-size: 0.95rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #0b0f16;
+      padding: 0.35rem;
+      border-radius: 3rem;
+      margin-bottom: 2rem;
+      border: 1px solid #1f2733;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #8b98aa;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.7rem 0.5rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tab-btn.active {
+      background: #1e293b;
+      color: white;
+      box-shadow: 0 4px 10px -4px #000000;
+    }
+
+    .auth-form {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .auth-form.active {
+      display: flex;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #b0bedb;
+      letter-spacing: 0.01em;
+    }
+
+    .input-group input {
+      background: #0b0f16;
+      border: 1px solid #29313f;
+      border-radius: 1rem;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.95rem;
+      color: white;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .input-group input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .input-group input::placeholder {
+      color: #4f5b6d;
+    }
+
+    .auth-btn {
+      background: #3b82f6;
+      border: none;
+      border-radius: 2rem;
+      padding: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .auth-btn:hover {
+      background: #2563eb;
+    }
+
+    .auth-btn:active {
+      transform: scale(0.98);
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #6f7d91;
+      font-size: 0.9rem;
+    }
+
+    .auth-footer a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    /* ===== DASHBOARD UI (main trading interface) ===== */
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      background: #0f131c;
+    }
+
+    /* Top navigation bar */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1e2532;
+      background: #0f131c;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: white;
+    }
+
+    .logo-area i {
+      color: #3b82f6;
+      font-size: 1.6rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #8b98aa;
+    }
+
+    .nav-links span {
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-links span:hover,
+    .nav-links .active {
+      color: white;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .balance-chip {
+      background: #1a2332;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid #2a3446;
+      color: #b0bedb;
+    }
+
+    .balance-chip i {
+      color: #3b82f6;
+      margin-right: 0.3rem;
+    }
+
+    .avatar {
+      background: #2a3446;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #e8edf5;
+      cursor: pointer;
+    }
+
+    /* Main content grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem 2rem 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Chart panel */
+    .chart-panel {
+      background: #131a24;
+      border-radius: 1.5rem;
+      padding: 1.5rem 1.5rem 1rem 1.5rem;
+      border: 1px solid #1e2532;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .pair-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pair-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .pair-name small {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #8b98aa;
+      margin-left: 0.4rem;
+    }
+
+    .price-up {
+      color: #10b981;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .price-up i {
+      font-size: 0.8rem;
+      margin-right: 0.2rem;
+    }
+
+    .timeframe {
+      display: flex;
+      gap: 0.5rem;
+      background: #0b0f16;
+      padding: 0.25rem;
+      border-radius: 2rem;
+    }
+
+    .timeframe span {
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #8b98aa;
+      border-radius: 2rem;
+      cursor: pointer;
+    }
+
+    .timeframe .active {
+      background: #1e293b;
+      color: white;
+    }
+
+    /* chart visualization (pure CSS/JS mock) */
+    .chart-area {
+      position: relative;
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding: 1rem 0 0.5rem 0;
+      border-bottom: 1px solid #1e2532;
+      margin-bottom: 0.5rem;
+    }
+
+    .candle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .candle .wick {
+      width: 2px;
+      background: #4b5563;
+      height: 20%;
+      min-height: 6px;
+    }
+
+    .candle .body {
+      width: 100%;
+      max-width: 12px;
+      border-radius: 2px;
+      background: #10b981;
+      height: 60%;
+      transition: height 0.2s;
+    }
+
+    .candle.red .body {
+      background: #ef4444;
+    }
+
+    .chart-footer {
+      display: flex;
+      justify-content: space-between;
+      color: #6f7d91;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-top: 0.5rem;
+    }
+
+    /* Order panel */
+    .order-panel {
+      background: #131a24;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #1e2532;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .order-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #0b0f16;
+      padding: 0.3rem;
+      border-radius: 2rem;
+    }
+
+    .order-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 2rem;
+      color: #8b98aa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .order-tab.active {
+      background: #1e293b;
+      color: white;
+    }
+
+    .order-tab.buy.active {
+      background: #10b98120;
+      color: #10b981;
+      border: 1px solid #10b98140;
+    }
+
+    .order-tab.sell.active {
+      background: #ef444420;
+      color: #ef4444;
+      border: 1px solid #ef444440;
+    }
+
+    .order-input {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .order-input label {
+      font-size: 0.8rem;
+      color: #8b98aa;
+      font-weight: 500;
+    }
+
+    .order-input input {
+      background: #0b0f16;
+      border: 1px solid #29313f;
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .order-input input:focus {
+      border-color: #3b82f6;
+    }
+
+    .order-btn {
+      background: #10b981;
+      border: none;
+      border-radius: 2rem;
+      padding: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .order-btn.sell {
+      background: #ef4444;
+    }
+
+    .order-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    /* market list */
+    .market-list {
+      background: #131a24;
+      border-radius: 1.5rem;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      border: 1px solid #1e2532;
+      margin-top: 1.5rem;
+    }
+
+    .market-list h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #b0bedb;
+      margin-bottom: 1rem;
+    }
+
+    .market-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #1e2532;
+      font-size: 0.95rem;
+    }
+
+    .market-item:last-child {
+      border-bottom: none;
+    }
+
+    .market-symbol {
+      font-weight: 600;
+      color: white;
+    }
+
+    .market-price {
+      font-weight: 500;
+    }
+
+    .market-change {
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2rem;
+    }
+
+    .market-change.up {
+      background: #10b98120;
+      color: #10b981;
+    }
+
+    .market-change.down {
+      background: #ef444420;
+      color: #ef4444;
+    }
+
+    /* logout btn */
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #29313f;
+      color: #8b98aa;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .logout-btn:hover {
+      background: #1e2532;
+      color: white;
+    }
+
+    /* utility */
+    .hidden {
+      display: none !important;
+    }
+
+    .demo-note {
+      font-size: 0.7rem;
+      color: #4f5b6d;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ========== AUTH OVERLAY (REGISTER / LOGIN) ========== -->
+    <div class="auth-overlay" id="authOverlay">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="logo">
+            <i class="fas fa-chart-line"></i> TradePro
+          </div>
+          <p>Real-time markets. Zero compromise.</p>
+        </div>
+
+        <!-- Tabs for Login / Register -->
+        <div class="tabs">
+          <button class="tab-btn active" id="loginTabBtn">Log In</button>
+          <button class="tab-btn" id="registerTabBtn">Register</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form class="auth-form active" id="loginForm">
+          <div class="input-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="trader@example.com" value="demo@trader.com">
+          </div>
+          <div class="input-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" value="password123">
+          </div>
+          <div class="error-message" id="loginError"></div>
+          <button type="submit" class="auth-btn">Log In</button>
+          <div class="auth-footer">
+            Don't have an account? <a id="switchToRegister">Register now</a>
+          </div>
+          <div class="demo-note">Demo: any email / password works</div>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form class="auth-form" id="registerForm">
+          <div class="input-group">
+            <label for="regFullName">Full name</label>
+            <input type="text" id="regFullName" placeholder="John Carter" value="John Carter">
+          </div>
+          <div class="input-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" placeholder="john@example.com" value="john@example.com">
+          </div>
+          <div class="input-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Minimum 8 characters" value="password123">
+          </div>
+          <div class="input-group">
+            <label for="regConfirm">Confirm password</label>
+            <input type="password" id="regConfirm" placeholder="Re-enter password" value="password123">
+          </div>
+          <div class="error-message" id="registerError"></div>
+          <button type="submit" class="auth-btn">Create account</button>
+          <div class="auth-footer">
+            Already registered? <a id="switchToLogin">Log in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========== DASHBOARD (TRADING UI) ========== -->
+    <div class="dashboard" id="dashboard">
+      <!-- top navigation -->
+      <div class="top-nav">
+        <div class="logo-area">
+          <i class="fas fa-chart-line"></i> TradePro
+        </div>
+        <div class="nav-links">
+          <span class="active">Trade</span>
+          <span>Markets</span>
+          <span>Portfolio</span>
+          <span>History</span>
+        </div>
+        <div class="user-profile">
+          <div class="balance-chip"><i class="fas fa-wallet"></i> $12,450.80</div>
+          <div class="avatar" id="userAvatar">JC</div>
+          <button class="logout-btn" id="logoutBtn">Log out</button>
+        </div>
+      </div>
+
+      <!-- main grid -->
+      <div class="main-grid">
+        <!-- left column: chart -->
+        <div>
+          <div class="chart-panel">
+            <div class="chart-header">
+              <div class="pair-info">
+                <div class="pair-name">BTC/USD <small>Bitcoin</small></div>
+                <div class="price-up"><i class="fas fa-caret-up"></i> +3.42%</div>
+              </div>
+              <div class="timeframe">
+                <span class="active">1H</span>
+                <span>4H</span>
+                <span>1D</span>
+                <span>1W</span>
+              </div>
+            </div>
+            <!-- chart mock with candles -->
+            <div class="chart-area" id="chartArea">
+              <!-- Candles will be generated by JS for realistic feel -->
+            </div>
+            <div class="chart-footer">
+              <span>09:00</span>
+              <span>12:00</span>
+              <span>15:00</span>
+              <span>18:00</span>
+              <span>21:00</span>
+            </div>
+          </div>
+
+          <!-- market list (below chart) -->
+          <div class="market-list">
+            <h3>Popular markets</h3>
+            <div class="market-item">
+              <span class="market-symbol">ETH/USD</span>
+              <span class="market-price">$3,452.12</span>
+              <span class="market-change up">+2.14%</span>
+            </div>
+            <div class="market-item">
+              <span class="market-symbol">SOL/USD</span>
+              <span class="market-price">$142.80</span>
+              <span class="market-change up">+5.67%</span>
+            </div>
+            <div class="market-item">
+              <span class="market-symbol">XRP/USD</span>
+              <span class="market-price">$0.5321</span>
+              <span class="market-change down">-1.23%</span>
+            </div>
+            <div class="market-item">
+              <span class="market-symbol">ADA/USD</span>
+              <span class="market-price">$0.4820</span>
+              <span class="market-change up">+0.89%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- right column: order panel -->
+        <div>
+          <div class="order-panel">
+            <div class="order-tabs">
+              <div class="order-tab buy active" id="buyTab">Buy</div>
+              <div class="order-tab sell" id="sellTab">Sell</div>
+            </div>
+
+            <div class="order-input">
+              <label>Price (USD)</label>
+              <input type="number" id="orderPrice" value="43250.50" step="0.01">
+            </div>
+            <div class="order-input">
+              <label>Amount (BTC)</label>
+              <input type="number" id="orderAmount" value="0.05" step="0.001">
+            </div>
+            <button class="order-btn" id="placeOrderBtn">Buy BTC</button>
+          </div>
+
+          <!-- open orders / extra info -->
+          <div style="background: #131a24; border-radius: 1.5rem; padding: 1rem 1.5rem; border: 1px solid #1e2532; margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; color: #8b98aa; font-size: 0.85rem; margin-bottom: 0.5rem;">
+              <span>Available</span><span>0.234 BTC</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; color: #8b98aa; font-size: 0.85rem; margin-bottom: 0.5rem;">
+              <span>Est. fee</span><span>0.0001 BTC</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; color: #b0bedb; font-weight: 600; margin-top: 0.8rem; border-top: 1px solid #1e2532; padding-top: 0.8rem;">
+              <span>Total</span><span id="orderTotal">$2,162.52</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- DOM elements ----------
+      const authOverlay = document.getElementById('authOverlay');
+      const dashboard = document.getElementById('dashboard');
+      const loginTabBtn = document.getElementById('loginTabBtn');
+      const registerTabBtn = document.getElementById('registerTabBtn');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const switchToRegister = document.getElementById('switchToRegister');
+      const switchToLogin = document.getElementById('switchToLogin');
+      const loginError = document.getElementById('loginError');
+      const registerError = document.getElementById('registerError');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userAvatar = document.getElementById('userAvatar');
+
+      // ---------- Auth state (simple) ----------
+      let isLoggedIn = false;  // we start with overlay visible, dashboard hidden behind
+
+      // dashboard is always in DOM, but we hide/show via overlay only? Actually overlay covers it.
+      // We can use the overlay to cover everything. After login, overlay hides and dashboard is visible.
+      // So we don't need to hide dashboard.
+
+      // Initially overlay is visible (covers dashboard). 
+      // After successful login/register, add 'hidden' class to overlay.
+
+      // ---------- Tab switching ----------
+      function setActiveTab(tab) {
+        if (tab === 'login') {
+          loginTabBtn.classList.add('active');
+          registerTabBtn.classList.remove('active');
+          loginForm.classList.add('active');
+          registerForm.classList.remove('active');
+          loginError.style.display = 'none';
+        } else {
+          registerTabBtn.classList.add('active');
+          loginTabBtn.classList.remove('active');
+          registerForm.classList.add('active');
+          loginForm.classList.remove('active');
+          registerError.style.display = 'none';
+        }
+      }
+
+      loginTabBtn.addEventListener('click', () => setActiveTab('login'));
+      registerTabBtn.addEventListener('click', () => setActiveTab('register'));
+      switchToRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveTab('register');
+      });
+      switchToLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveTab('login');
+      });
+
+      // ---------- Login handler ----------
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+
+        // Basic validation (any non-empty accepted for demo)
+        if (!email || !password) {
+          loginError.textContent = 'Please fill in all fields.';
+          loginError.style.display = 'block';
+          return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+          loginError.textContent = 'Please enter a valid email address.';
+          loginError.style.display = 'block';
+          return;
+        }
+        if (password.length < 6) {
+          loginError.textContent = 'Password must be at least 6 characters.';
+          loginError.style.display = 'block';
+          return;
+        }
+
+        loginError.style.display = 'none';
+
+        // "Login successful"
+        // Set avatar initials from email
+        const initials = email.substring(0, 2).toUpperCase();
+        userAvatar.textContent = initials;
+
+        // Hide overlay -> show dashboard
+        authOverlay.classList.add('hidden');
+        isLoggedIn = true;
+        // generate candles again for fun
+        generateCandles();
+      });
+
+      // ---------- Register handler ----------
+      registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('regFullName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const confirm = document.getElementById('regConfirm').value.trim();
+
+        // reset error
+        registerError.style.display = 'none';
+
+        // validation
+        if (!fullName || !email || !password || !confirm) {
+          registerError.textContent = 'All fields are required.';
+          registerError.style.display = 'block';
+          return;
+        }
+        if (fullName.length < 2) {
+          registerError.textContent = 'Please enter your full name.';
+          registerError.style.display = 'block';
+          return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+          registerError.textContent = 'Please enter a valid email address.';
+          registerError.style.display = 'block';
+          return;
+        }
+        if (password.length < 8) {
+          registerError.textContent = 'Password must be at least 8 characters.';
+          registerError.style.display = 'block';
+          return;
+        }
+        if (password !== confirm) {
+          registerError.textContent = 'Passwords do not match.';
+          registerError.style.display = 'block';
+          return;
+        }
+
+        // Registration successful -> auto login
+        registerError.style.display = 'none';
+
+        // Set avatar initials from full name
+        const names = fullName.split(' ');
+        let initials = names[0].charAt(0).toUpperCase();
+        if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
+        else if (names[0].length > 1) initials = names[0].substring(0,2).toUpperCase();
+
+        userAvatar.textContent = initials;
+
+        // Hide overlay -> dashboard
+        authOverlay.classList.add('hidden');
+        isLoggedIn = true;
+        generateCandles();
+      });
+
+      // ---------- Logout ----------
+      logoutBtn.addEventListener('click', () => {
+        // Show auth overlay (login tab active)
+        authOverlay.classList.remove('hidden');
+        setActiveTab('login');
+        // clear forms? optional
+        // reset to default values for convenience
+        document.getElementById('loginEmail').value = 'demo@trader.com';
+        document.getElementById('loginPassword').value = 'password123';
+        // clear errors
+        loginError.style.display = 'none';
+        registerError.style.display = 'none';
+        isLoggedIn = false;
+      });
+
+      // ---------- Candlestick generation (realistic mock) ----------
+      function generateCandles() {
+        const chartArea = document.getElementById('chartArea');
+        if (!chartArea) return;
+        chartArea.innerHTML = '';
+
+        const candleCount = 30;
+        for (let i = 0; i < candleCount; i++) {
+          const candle = document.createElement('div');
+          candle.className = 'candle';
+
+          // random trend for demo
+          const isRed = Math.random() > 0.55; // 45% red
+          const bodyHeight = Math.floor(Math.random() * 50) + 20; // 20-70%
+          const wickHeight = Math.floor(Math.random() * 25) + 5; // 5-30%
+
+          // wick top
+          const wickTop = document.createElement('div');
+          wickTop.className = 'wick';
+          wickTop.style.height = wickHeight + '%';
+
+          // body
+          const body = document.createElement('div');
+          body.className = 'body';
+          body.style.height = bodyHeight + '%';
+          if (isRed) {
+            body.style.background = '#ef4444';
+            candle.classList.add('red');
+          } else {
+            body.style.background = '#10b981';
+          }
+
+          // wick bottom (optional, we can reuse style)
+          const wickBottom = document.createElement('div');
+          wickBottom.className = 'wick';
+          wickBottom.style.height = (wickHeight * 0.7) + '%';
+
+          candle.appendChild(wickTop);
+          candle.appendChild(body);
+          candle.appendChild(wickBottom);
+
+          chartArea.appendChild(candle);
+        }
+      }
+
+      // generate candles on load (behind overlay)
+      window.addEventListener('load', () => {
+        generateCandles();
+      });
+
+      // ---------- Order panel interactions (demo) ----------
+      const buyTab = document.getElementById('buyTab');
+      const sellTab = document.getElementById('sellTab');
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      const orderPrice = document.getElementById('orderPrice');
+      const orderAmount = document.getElementById('orderAmount');
+      const orderTotal = document.getElementById('orderTotal');
+
+      let isBuy = true;
+
+      buyTab.addEventListener('click', () => {
+        buyTab.classList.add('active');
+        sellTab.classList.remove('active');
+        buyTab.classList.add('buy');
+        sellTab.classList.remove('sell');
+        isBuy = true;
+        placeOrderBtn.textContent = 'Buy BTC';
+        placeOrderBtn.classList.remove('sell');
+        updateTotal();
+      });
+
+      sellTab.addEventListener('click', () => {
+        sellTab.classList.add('active');
+        buyTab.classList.remove('active');
+        sellTab.classList.add('sell');
+        buyTab.classList.remove('buy');
+        isBuy = false;
+        placeOrderBtn.textContent = 'Sell BTC';
+        placeOrderBtn.classList.add('sell');
+        updateTotal();
+      });
+
+      function updateTotal() {
+        const price = parseFloat(orderPrice.value) || 0;
+        const amount = parseFloat(orderAmount.value) || 0;
+        const total = price * amount;
+        orderTotal.textContent = '$' + total.toFixed(2);
+      }
+
+      orderPrice.addEventListener('input', updateTotal);
+      orderAmount.addEventListener('input', updateTotal);
+
+      // initial total
+      updateTotal();
+
+      // Place order action (mock)
+      placeOrderBtn.addEventListener('click', () => {
+        const price = orderPrice.value;
+        const amount = orderAmount.value;
+        if (!price || !amount || parseFloat(amount) <= 0) {
+          alert('Please enter a valid amount.');
+          return;
+        }
+        const action = isBuy ? 'Buy' : 'Sell';
+        alert(`✅ ${action} order placed:\n${amount} BTC at $${price}\nTotal: $${(price * amount).toFixed(2)}`);
+      });
+
+      // Ensure overlay is visible by default (already visible)
+      // Also if user tries to log in after logout, everything works.
+
+      // For demonstration, if someone hits refresh, overlay is visible.
+      // Also handle initial tab state (login active)
+      setActiveTab('login');
+    })();
+  </script>
+</body>
+</html>
