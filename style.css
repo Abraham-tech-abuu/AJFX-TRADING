@@ -26,6 +26,10 @@ body{
   padding:1.5rem;
 }
 
+button,input,select{font:inherit}
+
+a{color:var(--accent);text-decoration:none}
+
 /* app container */
 .auth-screen, .app-screen{
   max-width:1200px;
@@ -46,6 +50,7 @@ body{
 .auth-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem}
 .auth-logo i{color:var(--accent)}
 .auth-sub{color:var(--muted);margin:10px 0 18px}
+.auth-hint{margin-top:8px;color:var(--muted);font-size:0.9rem}
 
 /* tabs */
 .auth-tabs{display:flex;gap:8px;margin-bottom:14px}
@@ -61,15 +66,20 @@ body{
 .auth-tab.active{background:rgba(255,255,255,0.02);color:var(--text);border:1px solid var(--card-border)}
 
 /* forms */
-.auth-form{display:flex;flex-direction:column;gap:10px}
+.auth-form{display:none;flex-direction:column;gap:10px}
+.auth-form.active{display:flex}
 .auth-form label{display:flex;flex-direction:column;font-size:0.9rem;color:var(--muted)}
-.auth-form input, select{
+.auth-form input, .auth-form select,
+select,input{
   margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--card-border);
   background:transparent;color:var(--text);outline:none;
 }
+input::placeholder{color:#56657d}
 .btn-primary{
   background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;
+  transition: filter 0.2s ease;
 }
+.btn-primary:hover{filter:brightness(1.08)}
 .btn-ghost{
   background:transparent;border:1px solid var(--card-border);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer;
 }
@@ -81,16 +91,19 @@ body{
 }
 .brand{font-weight:800;display:flex;align-items:center;gap:8px}
 .brand i{color:var(--accent)}
-.nav-links{display:flex;gap:12px}
+.nav-links{display:flex;gap:12px;flex-wrap:wrap}
 .nav-link{background:transparent;border:none;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
 .nav-link.active{color:var(--text);background:rgba(255,255,255,0.02);border:1px solid var(--card-border)}
 .nav-right{display:flex;align-items:center;gap:12px}
 .balance-badge{background:var(--panel);border:1px solid var(--card-border);padding:8px 10px;border-radius:999px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a3d5b,#1e2c41);font-weight:700;color:var(--text);border:1px solid #314159}
 
 /* content panels */
 .content{min-height:60vh}
 .page{display:none}
 .page.active{display:block}
+.page h1{margin:0 0 4px;font-size:1.8rem}
+.page-sub{color:var(--muted);margin-bottom:14px}
 .panel{
   background:var(--panel);border:1px solid var(--card-border);border-radius:12px;padding:14px;margin-bottom:14px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.5);
@@ -99,21 +112,39 @@ body{
 .stat-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:12px;border-radius:10px;border:1px solid var(--glass)}
 .stat-label{display:block;color:var(--muted);font-size:0.85rem}
 .stat-value{font-weight:800;font-size:1.05rem;margin-top:6px;color:var(--text)}
+.holdings-list, .empty{padding:8px 0;color:var(--muted)}
 
 /* tables */
 .market-table{width:100%;border-collapse:collapse;color:var(--text)}
-.market-table th, .market-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--card-border);font-size:0.95rem}
+.market-table th, .market-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--card-border);font-size:0.95rem}
 .market-table thead th{color:var(--muted);font-weight:700}
+.market-table tbody tr:hover{background:rgba(255,255,255,0.01)}
 
-/* buttons and utility */
-.side-tab{padding:8px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
+/* trade area */
+.trade-grid{display:grid;grid-template-columns: 2fr 1fr;gap:16px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:12px}
+.asset-title{font-size:1.15rem;font-weight:700}
+.asset-price{margin-left:8px;color:var(--success);font-weight:600}
+.timeframes{display:flex;gap:8px}
+.tf{background:transparent;border:1px solid var(--card-border);color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer}
+.tf.active{background:rgba(255,255,255,0.02);color:var(--text)}
+.chart-area{height:220px;border-radius:12px;background:linear-gradient(180deg, rgba(59,130,246,0.06), rgba(255,255,255,0.01));border:1px solid var(--card-border);overflow:hidden;margin-top:8px}
+.chart-area svg{width:100%;height:100%;display:block}
+
+/* order panel */
+.side-tabs{display:flex;gap:8px;margin:12px 0}
+.side-tab{flex:1;padding:8px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
 .side-tab.buy.active{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.12)}
 .side-tab.sell.active{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.12)}
 .summary-row{display:flex;justify-content:space-between;padding:8px 0;color:var(--muted)}
 .summary-row.total{font-weight:700;color:var(--text);border-top:1px dashed var(--card-border);padding-top:10px;margin-top:8px}
 
+/* buttons and utility */
+.error-msg{min-height:18px;color:var(--danger);font-size:0.85rem;margin-top:4px;display:block}
+.hidden{display:none !important}
+
 /* responsive */
 @media (max-width:900px){
   .topnav{flex-direction:column;align-items:flex-start;gap:12px}
-  .nav-links{flex-wrap:wrap}
+  .trade-grid{grid-template-columns:1fr}
 }
