@@ -1,0 +1,119 @@
+/* Dark theme for AJFX Trading — basic layout + components */
+:root{
+  --bg:#0b0e14;
+  --panel:#0f131c;
+  --muted:#8b98aa;
+  --text:#e8edf5;
+  --accent:#3b82f6;
+  --success:#10b981;
+  --danger:#ef4444;
+  --card-border:#1e2532;
+  --glass: rgba(255,255,255,0.02);
+  --radius:12px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.6);
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+  padding:1.5rem;
+}
+
+/* app container */
+.auth-screen, .app-screen{
+  max-width:1200px;
+  margin:0 auto;
+}
+
+/* AUTH */
+.auth-screen{display:flex;align-items:center;justify-content:center;min-height:80vh}
+.auth-card{
+  background:linear-gradient(180deg,var(--panel), rgba(15,19,28,0.95));
+  border:1px solid var(--card-border);
+  border-radius:16px;
+  padding:28px;
+  width:100%;
+  max-width:520px;
+  box-shadow:var(--shadow);
+}
+.auth-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem}
+.auth-logo i{color:var(--accent)}
+.auth-sub{color:var(--muted);margin:10px 0 18px}
+
+/* tabs */
+.auth-tabs{display:flex;gap:8px;margin-bottom:14px}
+.auth-tab{
+  flex:1;
+  background:transparent;
+  border:1px solid transparent;
+  padding:10px 12px;
+  border-radius:999px;
+  color:var(--muted);
+  cursor:pointer;
+}
+.auth-tab.active{background:rgba(255,255,255,0.02);color:var(--text);border:1px solid var(--card-border)}
+
+/* forms */
+.auth-form{display:flex;flex-direction:column;gap:10px}
+.auth-form label{display:flex;flex-direction:column;font-size:0.9rem;color:var(--muted)}
+.auth-form input, select{
+  margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--card-border);
+  background:transparent;color:var(--text);outline:none;
+}
+.btn-primary{
+  background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;
+}
+.btn-ghost{
+  background:transparent;border:1px solid var(--card-border);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer;
+}
+
+/* APP / TOP NAV */
+.topnav{
+  display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-radius:12px;background:linear-gradient(180deg,var(--panel),rgba(15,19,28,0.9));
+  border:1px solid var(--card-border);box-shadow:var(--shadow);margin-bottom:18px;
+}
+.brand{font-weight:800;display:flex;align-items:center;gap:8px}
+.brand i{color:var(--accent)}
+.nav-links{display:flex;gap:12px}
+.nav-link{background:transparent;border:none;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
+.nav-link.active{color:var(--text);background:rgba(255,255,255,0.02);border:1px solid var(--card-border)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.balance-badge{background:var(--panel);border:1px solid var(--card-border);padding:8px 10px;border-radius:999px;color:var(--muted);display:flex;gap:8px;align-items:center}
+
+/* content panels */
+.content{min-height:60vh}
+.page{display:none}
+.page.active{display:block}
+.panel{
+  background:var(--panel);border:1px solid var(--card-border);border-radius:12px;padding:14px;margin-bottom:14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:12px 0}
+.stat-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:12px;border-radius:10px;border:1px solid var(--glass)}
+.stat-label{display:block;color:var(--muted);font-size:0.85rem}
+.stat-value{font-weight:800;font-size:1.05rem;margin-top:6px;color:var(--text)}
+
+/* tables */
+.market-table{width:100%;border-collapse:collapse;color:var(--text)}
+.market-table th, .market-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--card-border);font-size:0.95rem}
+.market-table thead th{color:var(--muted);font-weight:700}
+
+/* buttons and utility */
+.side-tab{padding:8px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
+.side-tab.buy.active{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.12)}
+.side-tab.sell.active{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.12)}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;color:var(--muted)}
+.summary-row.total{font-weight:700;color:var(--text);border-top:1px dashed var(--card-border);padding-top:10px;margin-top:8px}
+
+/* responsive */
+@media (max-width:900px){
+  .topnav{flex-direction:column;align-items:flex-start;gap:12px}
+  .nav-links{flex-wrap:wrap}
+}
